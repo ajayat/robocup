@@ -1,7 +1,8 @@
 # Untitled - By: herve - ven. déc. 27 2019
 #https://www.makeblock.com/project/me-encoder-motor-driver
+#http://docs.micropython.org/en/latest/library/pyb.html
 
-from pyb import I2C
+from pyb import I2C, delay
 import ustruct
 
 
@@ -92,7 +93,33 @@ class motor :
          return val[0]
 
 
+class Bob:
+
+    def __init__(self):
+        self.motor1 = motor(4,9,1)
+        self.motor2 = motor(4,9,2)
+
+    def runTwoMotors(self, speed1, speed2):
+        self.motor1.runSpeed(speed1)
+        delay(100)
+        self.motor2.runSpeed(-speed2)
+
+    def turnLeft(self, speed, himself=True):
+        if himself:
+            self.runTwoMotors(0, -speed)
+        else:
+            self.motor2.runSpeed(-speed)
+
+    def turnRight(self, speed, himself=True):
+        if himself:
+            self.runTwoMotors(speed, 0)
+        else:
+            self.motor1.runSpeed(speed)
 
 
-moteur = motor(4,9,1)
-moteur.runSpeed(150)
+bob = Bob()
+bob.runTwoMotors(200, 200)
+delay(5*10**3) # 5s
+bob.turnLeft(200, himself=False)
+delay(5*10**3) # 5s
+bob.turnRight(200, himself=False)
