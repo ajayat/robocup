@@ -8,47 +8,71 @@
 #define BACKSENSORTRIG 4
 #define BACKSENSORECHO 5
 
-#define LINESENSOR1 A0 //avant gauche
-#define LINESENSOR2 A1 //avant droite
-#define LINESENSOR3 A2 // arrière gauche
-#define LINESENSOR4 A3 // arriere droit
+/*
+LineSensors
+    front left: A0 
+    front right: A1 
+    rear left: A2 
+    rear right: A3 
+*/
+
 
 UltraSonicDistanceSensor frontSensor(FRONTSENSORTRIG,FRONTSENSORECHO);
 UltraSonicDistanceSensor backSensor(BACKSENSORTRIG,BACKSENSORECHO);
 
+
+
 void setup()
 {
     Wire.begin(THISADRESS);
-    Wire.onRequest(SendData); // quand une requete est reçue, on appelle SendData
+    Wire.onRequest(SendData); //when a request is received, We call SendData
+
+    Serial.begin(9600);
+
+    pinMode(8,OUTPUT);
+    digitalWrite(8,HIGH); //pin through which the ultrasonic sensors are powered (5V)
 }
 
 void loop()
-{
-    delay(100);
+{   
+    PrintSensorsData(); 
+    delay(3000);
 }
 
-void sendData()
-{
-    int aheadDistance = frontSensor.measureDistanceCm();
-    int behindDistance = backSensor.measureDistanceCm();
-    int lineSensorData[4];
-    
-    for (int i = 0; i < 4; i++)
-    {
-        lineSensorData[i] = analogRead(i);
-    }
 
-    sendInt(aheadDistance);
-    sendInt(behindDistance);
+void SendData()
+{
+    SendInt(frontSensor.measureDistanceCm());
+    SendInt(backSensor.measureDistanceCm());
 
     for(int i = 0; i < 4 ; i++)
     {
-        sendInt(lineSensorData[i]);
+        SendInt(analogRead(i));
     }
+
+    Serial.println("On request\n");
 }
 
-void sendInt(int i)
+void SendInt(int i)
 {
-    byte b[2] = {(byte)highByte(i), (byte)lowByte(i)};
-    Wire.write(b, 2);
+    Wire.write((byte)highByte(i));
+    Wire.write((byte)lowByte(i));
+}
+
+void PrintSensorsData()
+{
+    Serial.print("Line sensors    fl: ");
+    Serial.print(analogRead(0));
+    Serial.print(" fr: ");
+    Serial.print(analogRead(1)); 
+    Serial.print(" rl: ");
+    Serial.print(analogRead(2));
+    Serial.print(" rr: ");
+    Serial.println(analogRead(3));
+
+    Serial.print("front distance sensor : ");
+    Serial.println(frontSensor.measureDistanceCm());
+    Serial.print("rear distance sensor : ");
+    Serial.println(backSensor.measureDistanceCm());
+    Serial.print("\n");
 }
