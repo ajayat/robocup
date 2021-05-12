@@ -58,21 +58,3 @@ void SendInt(int i)
     Wire.write((byte)highByte(i));
     Wire.write((byte)lowByte(i));
 }
-
-void PrintSensorsData()
-{
-    Serial.print("Line sensors    fl: ");
-    Serial.print(analogRead(0));
-    Serial.print(" fr: ");
-    Serial.print(analogRead(1)); 
-    Serial.print(" rl: ");
-    Serial.print(analogRead(2));
-    Serial.print(" rr: ");
-    Serial.println(analogRead(3));
-
-    Serial.print("front distance sensor : ");
-    Serial.println(frontSensor.measureDistanceCm());
-    Serial.print("rear distance sensor : ");
-    Serial.println(backSensor.measureDistanceCm());
-    Serial.print("\n");
-}

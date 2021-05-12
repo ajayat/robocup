@@ -1,10 +1,10 @@
 import uasyncio
 import ustruct
-from pyb import I2C
+from pyb import I2C, delay
 
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.Logger(__name__)
 
 
 class Sensor:
@@ -12,7 +12,7 @@ class Sensor:
     PIN = 2
     SLAVE_ADDRESS = 0x10
 
-    def __init__(self, pin, addr):
+    def __init__(self):
         """
         pin:: I2C bus
         addr:: slave's address
@@ -33,14 +33,14 @@ class Sensor:
         """
         try:
             # wait until I2C is not ready and cancel after 100ms if takes longer
-            await uasyncio.wait_for_ms(self._wait_until_ready, 100) 
+            await uasyncio.wait_for_ms(self._wait_until_ready(), 100)
         except uasyncio.TimeoutError:
             print("The camera was unable to receive data from the sensor")
         else:
             # creates a buffer of 12 bytes (6 * typeof(int))
             buffer = bytearray(12)
             # receive data from sensor buffer will be filled in-place
-            self.__i2c.recv(buffer, self.SLAVEADDRESS) 
+            self.__i2c.recv(buffer, self.SLAVE_ADDRESS)
             # https://docs.python.org/3/library/struct.html
             ahead_dist, behind_dist, *line_sensors = ustruct.unpack(">6H", buffer)
             return (ahead_dist, behind_dist, line_sensors)

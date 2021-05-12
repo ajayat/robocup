@@ -1,6 +1,8 @@
 import sys
 import utime
 
+
+_START_TIME = utime.time()
 LEVELS = {"DEBUG":0, "INFO":1, "WARNING":2, "ERROR":3, "CRITICAL":4}
 
 
@@ -42,6 +44,7 @@ class FileHandler(Handler):
         """
         with open(self.__file, "a", encoding="utf-8") as logfile:
             logfile.write(content+"\n")
+            logfile.flush()
 
 
 class StreamHandler(Handler):
@@ -64,7 +67,7 @@ class Logger:
     # A dict containing all instances of logger, we can get a logger with its name
     LOGGERS = {}
 
-    def __new__(cls, name: str ='root'):
+    def __new__(cls, name: str):
         """
         The real constructor, return an instance with a given name or create one.
         """
@@ -72,7 +75,7 @@ class Logger:
             cls.LOGGERS[name] = super().__new__(cls)
         return cls.LOGGERS[name]
 
-    def __init__(self, name: str ='root'):
+    def __init__(self, name: str):
         self.name = name
         self._level = 1  # default to INFO
         self._handlers = []
@@ -94,21 +97,21 @@ class Logger:
         if self._level <= LEVELS[level]:
             for handler in self.handlers:
                 content = handler.formatter.format(
-                    level=level, 
-                    name=self.name, 
-                    time=utime.time(), 
+                    level=level,
+                    name=self.name,
+                    time=utime.time()-_START_TIME,
                     message=message
                 )
                 if handler.level <= LEVELS[level]:
                     handler.write(content)
-    
+
     @property
     def handlers(self):
         """
-        Get all handlers that are accessible by the logger 
+        Get all handlers that are accessible by the logger
         (i.e, if propagate was set to True, data were sent to root's handlers)
         """
-        if self.name != 'root' and self.propagate:
+        if self.name != 'root' and self.propagate and 'root' in self.LOGGERS:
             return self._handlers + self.LOGGERS['root'].handlers
         return self._handlers
 
