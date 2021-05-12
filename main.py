@@ -1,4 +1,3 @@
-# Untitled - By: herve - ven. déc. 27 2019
 #https://www.makeblock.com/project/me-encoder-motor-driver
 #http://docs.micropython.org/en/latest/library/pyb.html
 
@@ -6,7 +5,7 @@ from pyb import I2C, delay
 import ustruct
 
 
-class motor :
+class Motor :
 
     CMD_MOVE_SPD = 0x05
     HEADER = [0xA5, 0x01]
@@ -15,7 +14,7 @@ class motor :
 
 
     def __init__(self,pin, addr, slot) :
-        ''' Constructeur de moteur meEncoder
+        '''
         pin : patte du bus I2C (2 ou 4)
         addr : adresse de l'esclave
         slot : slot du moteur (1 ou 2)
@@ -57,7 +56,7 @@ class motor :
          arg[in] -> speed : vitesse de rotation [-200,+200]
          '''
          self.__i2c.init(I2C.MASTER)
-         data = bytearray([self.char2byte(self.__slot),motor.CMD_MOVE_SPD]+self.float2bytes(speed))
+         data = bytearray([self.char2byte(self.__slot), Motor.CMD_MOVE_SPD]+self.float2bytes(speed))
          lrc = self.lrcCalc(data)
          print (data)
          trame=bytearray(self.HEADER+self.long2bytes(6))+data+bytearray([lrc,self.END])
@@ -75,29 +74,25 @@ class motor :
 
     def float2bytes(self,fval):
          val = ustruct.pack("f",fval)
-         #return [ord(val[0]),ord(val[1]),ord(val[2]),ord(val[3])]
          return [val[0],val[1],val[2],val[3]]
 
     def long2bytes(self,lval):
          val = ustruct.pack("l",lval)
-         #return [ord(val[0]),ord(val[1]),ord(val[2]),ord(val[3])]
          return [val[0],val[1],val[2],val[3]]
 
     def short2bytes(self,sval):
          val = ustruct.pack("h",sval)
-         #return [ord(val[0]),ord(val[1])]
          return [val[0],val[1]]
     def char2byte(self,cval):
          val = ustruct.pack("b",cval)
-         #return ord(val[0])
          return val[0]
 
 
 class Bob:
 
     def __init__(self):
-        self.motor1 = motor(4,9,1)
-        self.motor2 = motor(4,9,2)
+        self.motor1 = Motor(4,9,1)
+        self.motor2 = Motor(4,9,2)
 
     def runTwoMotors(self, speed1, speed2):
         self.motor1.runSpeed(speed1)
