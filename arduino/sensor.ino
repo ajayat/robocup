@@ -16,7 +16,6 @@ LineSensors
     rear right: A3 
 */
 
-
 UltraSonicDistanceSensor frontSensor(FRONTSENSORTRIG,FRONTSENSORECHO);
 UltraSonicDistanceSensor backSensor(BACKSENSORTRIG,BACKSENSORECHO);
 
