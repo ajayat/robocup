@@ -29,8 +29,8 @@ class Robot:
 
     def run_two_motors(self, rspeed, lspeed):
         logger.debug("Running motors at speed {} and {}".format(rspeed, lspeed))
-        self.rmotor.run_speed(rspeed)
-        self.lmotor.run_speed(-lspeed)
+        self.rmotor.run(rspeed)
+        self.lmotor.run(-lspeed)
 
     def turn_left(self, speed):
         self.run_two_motors(0, speed)

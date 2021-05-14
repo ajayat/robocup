@@ -17,7 +17,7 @@ class Sensor:
     ultrasonics sensors and line sensors (IR).
 
     Methods:
-        recv(): returns in real-time data of sensors
+        recv(): returns in real-time data from the sensors
     """
 
     PIN = 2

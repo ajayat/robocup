@@ -70,7 +70,7 @@ class StreamHandler(Handler):
     
     Attributes:
         formatter: Sets a format for logs 
-            default format is "{level}: {name} (+{time}s) -> {message}"
+            default format is "{level}: {name} -> {message}"
     Methods:
         write(content: str): writes a line in the sys.stdout stream
     """
