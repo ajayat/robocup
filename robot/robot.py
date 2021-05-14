@@ -9,6 +9,19 @@ logger = logging.Logger(__name__)
 
 
 class Robot:
+    """
+    A class that represents the robot and offers shortcuts functions 
+    to runs two motors.
+
+    Attributes:
+        rmotor: The right-side motor
+        lmotor: The left-side motor
+    Methods:
+        run_two_motors(self, rspeed, lspeed)
+        turn_left(self, speed)
+        turn_right(self, speed)
+        stop(self)
+    """
 
     def __init__(self):
         self.rmotor = Motor(4, 0x09, 1)
@@ -32,10 +45,11 @@ class Robot:
 
 
 def main():
+    """ The main function, interact with sensors and Robot class"""
     try:
         robot = Robot()
         robot.run_two_motors(200, 200)
-        delay(5000) # sleep for 5 seconds
+        delay(5000)  # sleep for 5 seconds
         robot.turn_left(200)
 
         camera = Camera()
