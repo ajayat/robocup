@@ -81,7 +81,7 @@ class Motor:
         Controls motor rotation with speed given for an optional time.
         Parameters:
             speed (float): rotation speed (RPM) in [-200, +200]
-            time (float, default None): in milli-seconds, runs for a specified time
+            time (float, default None): in seconds, runs for a specified time
         """
         if self.__i2c.is_ready(self.__addr):
             # Sets time limits to [-200 , +200] and convert it in bytes
@@ -97,7 +97,7 @@ class Motor:
                 "The motor {} cannot be run. "
                 "Please check that the motor is powered.".format(self.__slot+1)
             )
-    
+
     def move(self, angle: float, speed: float):
         """
         Move motor of angle degrees at a speed given.
@@ -109,14 +109,14 @@ class Motor:
             # Sets time limits to [-200 , +200] and convert it in bytes
             speed_bytes = self._to_bytes("f", min(200, max(speed, -200)))
             angle_bytes = self._to_bytes("f", angle)
-            data = [self.__slot, Motor.CMD_MOVE_AGL] + speed_bytes + angle_bytes
+            data = [self.__slot, Motor.CMD_MOVE_AGL] + angle_bytes + speed_bytes
             self.__send_data(data)
         else:
             logger.error(
                 "The motor {} cannot be move. "
                 "Please check that the motor is powered.".format(self.__slot+1)
             )
-            
+
     def get_speed(self):
         """ Returns the current motor speed """
         data = [self.__slot, Motor.CMD_GET_SPD]
