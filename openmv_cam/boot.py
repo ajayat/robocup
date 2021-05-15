@@ -15,4 +15,10 @@ if usb_vcp.debug_mode_enabled():
 else:
     logger.add_handler(logging.FileHandler("robot.log"))
 
-robot.main()  # Runs the main script
+try:
+    robot.main()  # Runs the main script
+except Exception as error:
+    if str(error) == "IDE interrupt":
+        logger.critical("The script was stopped by Open MV IDE")
+    else:
+        raise error
