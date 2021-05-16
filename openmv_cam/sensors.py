@@ -1,4 +1,4 @@
-import ustruct
+import ustruct as struct
 import sensor
 import pyb
 
@@ -38,7 +38,7 @@ class Sensor:
         # receive data from sensor buffer will be filled in-place
         self.__i2c.recv(buffer, Sensor.SLAVE_ADDRESS)
         # https://docs.python.org/3/library/struct.html
-        front_dist, back_dist, *line_sensors = ustruct.unpack(">6H", buffer)
+        front_dist, back_dist, *line_sensors = struct.unpack(">6H", buffer)
         return (front_dist, back_dist, line_sensors)
 
 
@@ -119,7 +119,7 @@ class Camera:
         img = sensor.snapshot()
         # Only blobs with more 50 pixels and area are returned
         for blob in img.find_blobs(Camera.THRESHOLDS, pixels_threshold=50, area_threshold=50):
-            if blob.roundness() < 0.5:
+            if blob.roundness() < 0.3:
                 continue
             if pyb.USB_VCP().debug_mode_enabled():
                 # If the cam is connected to OpenMV IDE

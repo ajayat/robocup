@@ -1,7 +1,9 @@
-from pyb import I2C, delay
-import ustruct
+from pyb import I2C
+import uasyncio as asyncio
+import ustruct as struct
 
 import logging
+from utils import Timer
 
 logger = logging.Logger(__name__)
 
@@ -27,7 +29,6 @@ class Motor:
     CMD_MOVE_SPD = 0x05
     CMD_MOVE_SPD_TIME = 0x08
     CMD_RESET = 0x07
-    CMD_GET_SPD = 0x09
     CMD_MOVE_AGL = 0x11
 
     def __init__(self, pin: int, addr: int, slot: int):
@@ -42,8 +43,14 @@ class Motor:
         self.__addr = addr
         self.__i2c = I2C(pin)
         self.__i2c.init(I2C.MASTER)
+        self.__speed = 0
+        self._stopper = Timer(callback=self.stop)
 
-    def __send_data(self, data: list):
+    @property
+    def speed(self):
+        return self.__speed
+
+    async def __send_data(self, data: list):
         """
         Creates a trame from the data and send it to motor via I2C.
         Parameters:
@@ -53,7 +60,7 @@ class Motor:
         data_size = self._to_bytes("l", len(data))
         trame = Motor.HEADER + data_size + data + [lrc, Motor.END]
         self.__i2c.send(bytearray(trame), self.__addr)
-        delay(10)  # A few wait time is needed for the motor.
+        await asyncio.sleep_ms(20)  # A few wait time is needed for the motor.
 
     def __recv_data(self, length: int):
         """
@@ -76,7 +83,7 @@ class Motor:
         list_of_slaves = self.__i2c.scan()
         return list_of_slaves
 
-    def run(self, speed: float, time=None):
+    async def run(self, speed: float, time=None):
         """
         Controls motor rotation with speed given for an optional time.
         Parameters:
@@ -85,51 +92,39 @@ class Motor:
         """
         if self.__i2c.is_ready(self.__addr):
             # Sets time limits to [-200 , +200] and convert it in bytes
-            speed_bytes = self._to_bytes("f", min(200, max(speed, -200)))
-            time_bytes = self._to_bytes("f", max(time, 0))
-            if time:
-                data = [self.__slot, Motor.CMD_MOVE_SPD_TIME] + speed_bytes + time_bytes
-            else:
+            speed = min(200, max(speed, -200))
+            if speed != self.__speed:
+                speed_bytes = self._to_bytes("f", speed)
                 data = [self.__slot, Motor.CMD_MOVE_SPD] + speed_bytes
-            self.__send_data(data)
+                self.__speed = speed
+                await self.__send_data(data)
+            if time:
+                self._stopper.cancel()
+                self._stopper.start(timeout=time)
         else:
-            logger.error(
-                "The motor {} cannot be run. "
-                "Please check that the motor is powered.".format(self.__slot+1)
-            )
+            raise RuntimeError("Motor {} cannot be run.".format(self.__slot))
 
-    def move(self, angle: float, speed: float):
+    async def move(self, angle: float, speed: float):
         """
         Move motor of angle degrees at a speed given.
         Parameters:
             speed (float): rotation speed (RPM) in [-200, +200]
             angle (float): angle in degrees to rotate.
         """
-        if self.__i2c.is_ready(self.__addr):
-            # Sets time limits to [-200 , +200] and convert it in bytes
-            speed_bytes = self._to_bytes("f", min(200, max(speed, -200)))
-            angle_bytes = self._to_bytes("f", angle)
-            data = [self.__slot, Motor.CMD_MOVE_AGL] + angle_bytes + speed_bytes
-            self.__send_data(data)
-        else:
-            logger.error(
-                "The motor {} cannot be move. "
-                "Please check that the motor is powered.".format(self.__slot+1)
-            )
+        speed = min(200, max(speed, -200))  # Sets time limits to [-200 , +200]
+        if speed != self.__speed:
+            self.__speed = speed
+            time = (angle / 360 * 60) / speed
+            await self.run(speed, time)
 
-    def get_speed(self):
-        """ Returns the current motor speed """
-        data = [self.__slot, Motor.CMD_GET_SPD]
-        self.__send_data(data)
-        speed_bf = self.__recv_data(length=len(data))
-        return ustruct.unpack("f", speed_bf[2:])
-
-    def stop(self):
+    async def stop(self):
         """ Reset motor position to 0 and reinitialize data received. """
         data = [self.__slot, Motor.CMD_RESET]
-        self.__send_data(data)
+        await self.__send_data(data)
+        self.__speed = 0
 
-    def _lrc_calc(self, data):
+    @staticmethod
+    def _lrc_calc(data):
         """
         Calculate the Longitudinal Redondancy Check (LRC)
         Returns:
@@ -140,7 +135,8 @@ class Motor:
             lrc ^= byte
         return lrc
 
-    def _to_bytes(self, format: str, data) -> list:
+    @staticmethod
+    def _to_bytes(format: str, data) -> list:
         """
         Convert and pack data with a given format, the list of available formats
         can be found here: https://docs.python.org/3/library/struct.html
@@ -150,5 +146,5 @@ class Motor:
         Returns:
             data_bytes (list): a list of each element of data converted to bytes.
         """
-        data_bytes = list(ustruct.pack(format, data))
+        data_bytes = list(struct.pack(format, data))
         return data_bytes

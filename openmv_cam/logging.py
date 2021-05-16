@@ -2,9 +2,9 @@
 # https://docs.python.org/3/howto/logging.html
 
 import sys
-import utime
+import utime as time
 
-_START_TIME = utime.time()
+_START_TIME = time.time()
 LEVELS = {"DEBUG":0, "INFO":1, "WARNING":2, "ERROR":3, "CRITICAL":4}
 
 
@@ -37,12 +37,12 @@ class Handler:
 
 
 class FileHandler(Handler):
-    """ 
+    """
     A handler used to performs files operations.
-    
+
     Attributes:
         file: the file path
-        formatter: Sets a format for logs 
+        formatter: Sets a format for logs
             default format is "{level}: {name} (+{time}s) -> {message}"
     Methods:
         write(content: str): write a line in the specified file
@@ -50,7 +50,7 @@ class FileHandler(Handler):
     def __init__(self, file: str):
         super().__init__()
         self.file = file
-        self._level = 0  # default to DEBUG
+        self._level = 1  # default to INFO
         self.formatter = "{level}: {name} (+{time}s) -> {message}"
 
     def write(self, content: str):
@@ -59,23 +59,23 @@ class FileHandler(Handler):
         Parameters:
             content (str): a log line to write in a file
         """
-        with open(self.__file, "a", encoding="utf-8") as logfile:
+        with open(self.file, "a", encoding="utf-8") as logfile:
             logfile.write(content+"\n")
             logfile.flush()
 
 
 class StreamHandler(Handler):
-    """ 
+    """
     A handler used to write logs in the output console
-    
+
     Attributes:
-        formatter: Sets a format for logs 
+        formatter: Sets a format for logs
             default format is "{level}: {name} -> {message}"
     Methods:
         write(content: str): writes a line in the sys.stdout stream
     """
     def __init__(self):
-        self._level = 1  # default to INFO
+        self._level = 0  # default to DEBUG
         self.formatter = "{level}: {name} -> {message}"
 
     def write(self, content: str):
@@ -135,10 +135,10 @@ class Logger:
         Tests if the log's request level is superior to the logger level,
         then format the string with the format of the handler and write it.
         Parameters:
-            level (str | int): 
+            level (str | int):
                 can be DEBUG, INFO, WARNING, ERROR or CRITICAL, or a int from 0 to 4
             message (str)
-        
+
         Shortcuts methods are debug(), info(), error(), warning() and critical().
         """
         if self._level <= LEVELS[level]:
@@ -146,7 +146,7 @@ class Logger:
                 content = handler.formatter.format(
                     level=level,
                     name=self.name,
-                    time=utime.time()-_START_TIME,
+                    time=time.time()-_START_TIME,
                     message=message
                 )
                 if handler.level <= LEVELS[level]:

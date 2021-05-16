@@ -1,5 +1,6 @@
 # This program is the entry point of the Open MV Cam
 import pyb
+import uasyncio as asyncio
 
 import logging
 import robot
@@ -16,7 +17,7 @@ else:
     logger.add_handler(logging.FileHandler("robot.log"))
 
 try:
-    robot.main()  # Runs the main script
+    asyncio.run(robot.main())  # Runs the main script
 except Exception as error:
     if str(error) == "IDE interrupt":
         logger.critical("The script was stopped by Open MV IDE")
