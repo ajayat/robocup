@@ -20,7 +20,6 @@ class Timer:
         Parameters:
             timeout (int): in seconds, time to wait
         """
-        self._timeout = timeout
         self._task = asyncio.create_task(self._job(timeout))
 
     async def _job(self, timeout):

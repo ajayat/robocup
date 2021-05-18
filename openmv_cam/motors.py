@@ -92,7 +92,8 @@ class Motor:
         """
         if self.__i2c.is_ready(self.__addr):
             # Sets time limits to [-200 , +200] and convert it in bytes
-            speed = min(200, max(speed, -200))
+            if speed < -200: speed = -200
+            elif speed > 200: speed = 200
             if speed != self.__speed:
                 speed_bytes = self._to_bytes("f", speed)
                 data = [self.__slot, Motor.CMD_MOVE_SPD] + speed_bytes
@@ -111,7 +112,8 @@ class Motor:
             speed (float): rotation speed (RPM) in [-200, +200]
             angle (float): angle in degrees to rotate.
         """
-        speed = min(200, max(speed, -200))  # Sets time limits to [-200 , +200]
+        if speed < -200: speed = -200
+        elif speed > 200: speed = 200
         if speed != self.__speed:
             self.__speed = speed
             time = (angle / 360 * 60) / speed
@@ -131,20 +133,20 @@ class Motor:
             lrc (int): the value of LRC
         """
         lrc = 0x00
-        for byte in data :
+        for byte in data:
             lrc ^= byte
         return lrc
 
     @staticmethod
-    def _to_bytes(format: str, data) -> list:
+    def _to_bytes(fmt: str, data) -> list:
         """
         Convert and pack data with a given format, the list of available formats
         can be found here: https://docs.python.org/3/library/struct.html
         Parameters:
-            format (str): string used to pack the data from a given format.
+            fmt (str): string used to pack the data from a given format.
             data (any): data to be converted to bytes.
         Returns:
             data_bytes (list): a list of each element of data converted to bytes.
         """
-        data_bytes = list(struct.pack(format, data))
+        data_bytes = list(struct.pack(fmt, data))
         return data_bytes

@@ -39,7 +39,7 @@ class Sensor:
         self.__i2c.recv(buffer, Sensor.SLAVE_ADDRESS)
         # https://docs.python.org/3/library/struct.html
         front_dist, back_dist, *line_sensors = struct.unpack(">6H", buffer)
-        return (front_dist, back_dist, line_sensors)
+        return front_dist, back_dist, line_sensors
 
 
 class Camera:
@@ -74,12 +74,12 @@ class Camera:
         # Setup sensor settings
         # https://docs.openmv.io/library/omv.sensor.html#constants
         sensor.reset()
-        sensor.set_vflip(True) # Reverse image on vertical axis
-        sensor.set_hmirror(True) # Reverse image on horizontal axis
+        sensor.set_vflip(True)  # Reverse image on vertical axis
+        sensor.set_hmirror(True)  # Reverse image on horizontal axis
         sensor.set_pixformat(sensor.RGB565)
         sensor.set_framesize(sensor.QVGA)
-        sensor.set_auto_gain(False) # Must be turned off for color tracking
-        sensor.set_auto_whitebal(False) # Must be turned off for color tracking
+        sensor.set_auto_gain(False)  # Must be turned off for color tracking
+        sensor.set_auto_whitebal(False)  # Must be turned off for color tracking
 
     @staticmethod
     def distance_to(blob):

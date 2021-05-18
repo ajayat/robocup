@@ -5,7 +5,7 @@ import sys
 import utime as time
 
 _START_TIME = time.time()
-LEVELS = {"DEBUG":0, "INFO":1, "WARNING":2, "ERROR":3, "CRITICAL":4}
+LEVELS = {"DEBUG": 0, "INFO": 1, "WARNING": 2, "ERROR": 3, "CRITICAL": 4}
 
 
 class Handler:
@@ -18,7 +18,7 @@ class Handler:
 
     def __init__(self):
         self._level = 1  # default to INFO
-        self._formatter = "{level} -> {message}" # default format
+        self._formatter = "{level} -> {message}"  # default format
 
     @property
     def level(self) -> int:
@@ -75,10 +75,12 @@ class StreamHandler(Handler):
         write(content: str): writes a line in the sys.stdout stream
     """
     def __init__(self):
+        super().__init__()
         self._level = 0  # default to DEBUG
         self.formatter = "{level}: {name} -> {message}"
 
-    def write(self, content: str):
+    @staticmethod
+    def write(content: str):
         """ Writes a formatted line to the output console (sys.stdout) """
         sys.stdout.write(content+"\n")
 
@@ -108,7 +110,7 @@ class Logger:
         Parameters:
             name: The return an instance with a given name or create one.
         """
-        if not name in cls.LOGGERS:
+        if name not in cls.LOGGERS:
             cls.LOGGERS[name] = super().__new__(cls)
         return cls.LOGGERS[name]
 

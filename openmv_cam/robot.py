@@ -43,13 +43,14 @@ class Robot:
         at a given speed.
         Parameters:
             distance (float): in millimeters
+            speed (float): in RPM
         """
         turns = distance / (Robot.WHEEL_DIAMETER * math.pi)
         time = turns * 60 / abs(speed)
         return time
 
-    async def stop(self, *args):
-        """ Stop all motors and timer"""
+    async def stop(self, *_):
+        """ Stop all motors and timer """
         logger.debug("Stopping motors...")
         await self.rmotor.stop()
         await self.lmotor.stop()
@@ -93,8 +94,8 @@ async def main():
         # if the ball was detected
         if ball_blob:
             angle = robot.camera.get_angle(ball_blob)
-            if abs(angle) >= 15:
-                await robot.rotate(speed=100, angle=angle-15)
+            if abs(angle) >= 5:
+                await robot.rotate(speed=100, angle=angle)
             if not robot.moving:
                 dist = robot.camera.distance_to(ball_blob)
                 await robot.move_to(dist, speed=150)
