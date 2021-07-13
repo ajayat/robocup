@@ -1,0 +1,334 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>sensors &mdash; Robocup 1.1.0rc documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Robocup
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">OpenMV Camera</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Robocup</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>sensors</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sensors</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">ustruct</span> <span class="k">as</span> <span class="nn">struct</span>
+<span class="kn">import</span> <span class="nn">sensor</span>
+<span class="kn">import</span> <span class="nn">pyb</span>
+
+<span class="kn">import</span> <span class="nn">ulogging</span> <span class="k">as</span> <span class="nn">logging</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Sensor"><a class="viewcode-back" href="../sensors.html#sensors.Sensor">[docs]</a><span class="k">class</span> <span class="nc">Sensor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A class that represent the Arduino-controlled sensors</span>
+
+<span class="sd">    Offers an interface for ultrasonics sensors and line sensors (IR).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">PIN</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">SLAVE_ADDRESS</span> <span class="o">=</span> <span class="mh">0x10</span>
+
+<div class="viewcode-block" id="Sensor.__init__"><a class="viewcode-back" href="../sensors.html#sensors.Sensor.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__i2c</span> <span class="o">=</span> <span class="n">pyb</span><span class="o">.</span><span class="n">I2C</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PIN</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__i2c</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">pyb</span><span class="o">.</span><span class="n">I2C</span><span class="o">.</span><span class="n">MASTER</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;Sensor(pin=</span><span class="si">{}</span><span class="s2">, address=</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PIN</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">SLAVE_ADDRESS</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Sensor.recv"><a class="viewcode-back" href="../sensors.html#sensors.Sensor.recv">[docs]</a>    <span class="k">def</span> <span class="nf">recv</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Requests the Arduino controller via I2C and unpack data received</span>
+<span class="sd">        from sensors.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (front_dist, back_dist, line_sensors):</span>
+<span class="sd">            The front and back distance and a list of four line sensors values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># creates a buffer of 12 bytes (6 * typeof(int))</span>
+        <span class="n">buffer</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+        <span class="c1"># receive data from sensor buffer will be filled in-place</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__i2c</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">Sensor</span><span class="o">.</span><span class="n">SLAVE_ADDRESS</span><span class="p">)</span>
+        <span class="c1"># https://docs.python.org/3/library/struct.html</span>
+        <span class="n">front_dist</span><span class="p">,</span> <span class="n">back_dist</span><span class="p">,</span> <span class="o">*</span><span class="n">line_sensors</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s2">&quot;&gt;6H&quot;</span><span class="p">,</span> <span class="n">buffer</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">front_dist</span><span class="p">,</span> <span class="n">back_dist</span><span class="p">,</span> <span class="n">line_sensors</span></div></div>
+
+
+<div class="viewcode-block" id="Camera"><a class="viewcode-back" href="../sensors.html#sensors.Camera">[docs]</a><span class="k">class</span> <span class="nc">Camera</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A class to groups functions related to OpenMV Cam</span>
+
+<span class="sd">    More infos:</span>
+<span class="sd">    https://openmv.io/products/openmv-cam-h7</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        width: the screen width in pixels</span>
+<span class="sd">        height: the screen height in pixels</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># List of thresholds (can be obtained in Open MV) that match the element color</span>
+    <span class="n">THRESHOLDS</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">127</span><span class="p">,</span> <span class="mi">42</span><span class="p">,</span> <span class="o">-</span><span class="mi">128</span><span class="p">,</span> <span class="mi">127</span><span class="p">)]</span>  <span class="c1"># RED COLOR</span>
+    <span class="n">BALL_DIAMETER</span> <span class="o">=</span> <span class="mi">45</span>  <span class="c1"># in millimeters</span>
+    <span class="n">FOCAL_LENGTH</span> <span class="o">=</span> <span class="mf">2.8</span>
+    <span class="n">HFOV</span> <span class="o">=</span> <span class="mf">70.8</span>  <span class="c1"># horizontal field of view in degrees</span>
+    <span class="n">VFOV</span> <span class="o">=</span> <span class="mf">55.6</span>
+    <span class="n">REAL_SIZE</span> <span class="o">=</span> <span class="mi">7</span>  <span class="c1"># in millimeters</span>
+
+<div class="viewcode-block" id="Camera.__init__"><a class="viewcode-back" href="../sensors.html#sensors.Camera.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the LED to show state and setup the camera sensor&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_red_led</span> <span class="o">=</span> <span class="n">pyb</span><span class="o">.</span><span class="n">LED</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Turns led on (red color)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_red_led</span><span class="o">.</span><span class="n">on</span><span class="p">()</span>
+        <span class="c1"># Setup sensor settings</span>
+        <span class="c1"># https://docs.openmv.io/library/omv.sensor.html#constants</span>
+        <span class="n">sensor</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="n">sensor</span><span class="o">.</span><span class="n">set_vflip</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># Reverse image on vertical axis</span>
+        <span class="n">sensor</span><span class="o">.</span><span class="n">set_hmirror</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># Reverse image on horizontal axis</span>
+        <span class="n">sensor</span><span class="o">.</span><span class="n">set_pixformat</span><span class="p">(</span><span class="n">sensor</span><span class="o">.</span><span class="n">RGB565</span><span class="p">)</span>
+        <span class="n">sensor</span><span class="o">.</span><span class="n">set_framesize</span><span class="p">(</span><span class="n">sensor</span><span class="o">.</span><span class="n">QVGA</span><span class="p">)</span>
+        <span class="n">sensor</span><span class="o">.</span><span class="n">set_auto_gain</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># Must be turned off for color tracking</span>
+        <span class="c1"># Must be turned off for color tracking</span>
+        <span class="n">sensor</span><span class="o">.</span><span class="n">set_auto_whitebal</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Camera.distance_to"><a class="viewcode-back" href="../sensors.html#sensors.Camera.distance_to">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">distance_to</span><span class="p">(</span><span class="n">blob</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Calculate real distance between camera and object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            blob: a blob object (you can get one with ball_blob())</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The distance in millimeters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">obj_width_on_sensor</span> <span class="o">=</span> <span class="p">(</span><span class="n">Camera</span><span class="o">.</span><span class="n">REAL_SIZE</span> <span class="o">*</span> <span class="n">blob</span><span class="o">.</span><span class="n">h</span><span class="p">()</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">sensor</span><span class="o">.</span><span class="n">width</span><span class="p">()</span>
+        <span class="n">distance</span> <span class="o">=</span> <span class="p">(</span><span class="n">Camera</span><span class="o">.</span><span class="n">BALL_DIAMETER</span> <span class="o">*</span> <span class="n">Camera</span><span class="o">.</span><span class="n">FOCAL_LENGTH</span><span class="p">)</span> <span class="o">/</span> <span class="n">obj_width_on_sensor</span>
+        <span class="k">return</span> <span class="n">distance</span></div>
+
+<div class="viewcode-block" id="Camera.get_angle"><a class="viewcode-back" href="../sensors.html#sensors.Camera.get_angle">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_angle</span><span class="p">(</span><span class="n">blob</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get horizontal relative angle (in degrees) of the blob.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            blob: a blob object (you can get one with ball_blob())</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The angle between [-35.4, +35.4]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rel_angle</span> <span class="o">=</span> <span class="n">Camera</span><span class="o">.</span><span class="n">HFOV</span> <span class="o">*</span> <span class="p">(</span><span class="n">blob</span><span class="o">.</span><span class="n">cxf</span><span class="p">()</span> <span class="o">-</span> <span class="n">sensor</span><span class="o">.</span><span class="n">width</span><span class="p">()</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">sensor</span><span class="o">.</span><span class="n">width</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">rel_angle</span></div>
+
+<div class="viewcode-block" id="Camera.shutdown"><a class="viewcode-back" href="../sensors.html#sensors.Camera.shutdown">[docs]</a>    <span class="k">def</span> <span class="nf">shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Shutdown the camera and the LED&quot;&quot;&quot;</span>
+        <span class="n">sensor</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_red_led</span><span class="o">.</span><span class="n">off</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Camera.ball_blob"><a class="viewcode-back" href="../sensors.html#sensors.Camera.ball_blob">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">ball_blob</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Takes a snapshot and find pixels area matching with thresholds .</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            image.blob | None: returns a blob object if visible.</span>
+<span class="sd">        Additionnal informations can be found here about the blob object:</span>
+<span class="sd">            https://docs.openmv.io/library/omv.image.html</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">sensor</span><span class="o">.</span><span class="n">snapshot</span><span class="p">()</span>
+        <span class="c1"># Only blobs with more 50 pixels and area are returned</span>
+        <span class="k">for</span> <span class="n">blob</span> <span class="ow">in</span> <span class="n">img</span><span class="o">.</span><span class="n">find_blobs</span><span class="p">(</span>
+            <span class="n">Camera</span><span class="o">.</span><span class="n">THRESHOLDS</span><span class="p">,</span> <span class="n">pixels_threshold</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">area_threshold</span><span class="o">=</span><span class="mi">50</span>
+        <span class="p">):</span>
+            <span class="k">if</span> <span class="n">blob</span><span class="o">.</span><span class="n">roundness</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">0.3</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">pyb</span><span class="o">.</span><span class="n">USB_VCP</span><span class="p">()</span><span class="o">.</span><span class="n">debug_mode_enabled</span><span class="p">():</span>
+                <span class="c1"># If the cam is connected to OpenMV IDE</span>
+                <span class="n">img</span><span class="o">.</span><span class="n">draw_rectangle</span><span class="p">(</span><span class="n">blob</span><span class="o">.</span><span class="n">rect</span><span class="p">())</span>
+                <span class="n">img</span><span class="o">.</span><span class="n">draw_cross</span><span class="p">(</span><span class="n">blob</span><span class="o">.</span><span class="n">cx</span><span class="p">(),</span> <span class="n">blob</span><span class="o">.</span><span class="n">cy</span><span class="p">())</span>
+
+            <span class="k">return</span> <span class="n">blob</span>  <span class="c1"># we need only one blob</span>
+        <span class="k">return</span> <span class="kc">None</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Adrien J..
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

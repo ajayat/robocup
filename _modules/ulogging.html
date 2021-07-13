@@ -1,0 +1,381 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>ulogging &mdash; Robocup 1.1.0rc documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Robocup
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">OpenMV Camera</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Robocup</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>ulogging</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ulogging</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This module is similar to the logging CPython3 module</span>
+<span class="c1"># https://docs.python.org/3/howto/logging.html</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">utime</span> <span class="k">as</span> <span class="nn">time</span>
+
+<span class="n">_START_TIME</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">LEVELS</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;DEBUG&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;INFO&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;WARNING&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;CRITICAL&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">}</span>
+
+
+<div class="viewcode-block" id="Handler"><a class="viewcode-back" href="../ulogging.html#ulogging.Handler">[docs]</a><span class="k">class</span> <span class="nc">Handler</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A class that gives general methods of a handler used for I/O operations.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Handler.__init__"><a class="viewcode-back" href="../ulogging.html#ulogging.Handler.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_level</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># default to INFO</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_formatter</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{level}</span><span class="s2"> -&gt; </span><span class="si">{message}</span><span class="s2">&quot;</span>  <span class="c1"># default format</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">level</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_level</span>
+
+<div class="viewcode-block" id="Handler.set_level"><a class="viewcode-back" href="../ulogging.html#ulogging.Handler.set_level">[docs]</a>    <span class="k">def</span> <span class="nf">set_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Sets the log level for filtering logs at the handler scope.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            level: Can be DEBUG, INFO, WARNING, ERROR or CRITICAL, or a int from 0 to 4</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="c1"># if level is a string, get its associated number</span>
+            <span class="n">level</span> <span class="o">=</span> <span class="n">LEVELS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_level</span> <span class="o">=</span> <span class="n">level</span></div></div>
+
+
+<div class="viewcode-block" id="FileHandler"><a class="viewcode-back" href="../ulogging.html#ulogging.FileHandler">[docs]</a><span class="k">class</span> <span class="nc">FileHandler</span><span class="p">(</span><span class="n">Handler</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A handler used to performs files operations.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        file: the file path</span>
+<span class="sd">        formatter: Sets a format for logs</span>
+<span class="sd">            default format is &quot;{level}: {name} (+{time}s) -&gt; {message}&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="FileHandler.__init__"><a class="viewcode-back" href="../ulogging.html#ulogging.FileHandler.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file</span> <span class="o">=</span> <span class="n">file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_level</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># default to INFO</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">formatter</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{level}</span><span class="s2">: </span><span class="si">{name}</span><span class="s2"> (+</span><span class="si">{time}</span><span class="s2">s) -&gt; </span><span class="si">{message}</span><span class="s2">&quot;</span></div>
+
+<div class="viewcode-block" id="FileHandler.write"><a class="viewcode-back" href="../ulogging.html#ulogging.FileHandler.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write data into the specified file, and close after.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            content: a log line to write in a file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">logfile</span><span class="p">:</span>
+            <span class="n">logfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">content</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logfile</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="StreamHandler"><a class="viewcode-back" href="../ulogging.html#ulogging.StreamHandler">[docs]</a><span class="k">class</span> <span class="nc">StreamHandler</span><span class="p">(</span><span class="n">Handler</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A handler used to write logs in the output console</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        formatter: Sets a format for logs</span>
+<span class="sd">            default format is &quot;{level}: {name} -&gt; {message}&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="StreamHandler.__init__"><a class="viewcode-back" href="../ulogging.html#ulogging.StreamHandler.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_level</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># default to DEBUG</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">formatter</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{level}</span><span class="s2">: </span><span class="si">{name}</span><span class="s2"> -&gt; </span><span class="si">{message}</span><span class="s2">&quot;</span></div>
+
+<div class="viewcode-block" id="StreamHandler.write"><a class="viewcode-back" href="../ulogging.html#ulogging.StreamHandler.write">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Writes a formatted line to the output console (sys.stdout)&quot;&quot;&quot;</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">content</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="Logger"><a class="viewcode-back" href="../ulogging.html#ulogging.Logger">[docs]</a><span class="k">class</span> <span class="nc">Logger</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A class to perform filtering log messages before sending to handlers.</span>
+
+<span class="sd">    Conventionnal usage:</span>
+<span class="sd">    logger = logging.Logger(__name__)</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        name: The logger&#39;s name</span>
+<span class="sd">        propagate: If set to True (default), logs will be written in root&#39;s handlers.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># A dict containing all instances of logger, we can get a logger with its name</span>
+    <span class="n">LOGGERS</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The real constructor,</span>
+
+<span class="sd">        It&#39;s used to check if an instance with the same name already exists</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name: The return an instance with a given name or create one.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">LOGGERS</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">LOGGERS</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">LOGGERS</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Logger.__init__"><a class="viewcode-back" href="../ulogging.html#ulogging.Logger.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the logger.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): the logger&#39;s name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_level</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># default to INFO</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handlers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">propagate</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Used to perform logging with a given level:</span>
+<span class="sd">        logger.info(...) will call __getattr__(self, &quot;info&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">in</span> <span class="n">LEVELS</span><span class="p">:</span>
+            <span class="k">return</span> <span class="k">lambda</span> <span class="n">message</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">message</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Logger.log"><a class="viewcode-back" href="../ulogging.html#ulogging.Logger.log">[docs]</a>    <span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Write a log line in a file.</span>
+
+<span class="sd">        Tests if the log&#39;s request level is superior to the logger level,</span>
+<span class="sd">        then format the string with the format of the handler and write it.</span>
+<span class="sd">        Shortcuts methods are debug(), info(), error(), warning() and critical().</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            level: Can be DEBUG, INFO, WARNING, ERROR or CRITICAL, or a int from 0 to 4.</span>
+<span class="sd">            message: The message to write.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_level</span> <span class="o">&lt;=</span> <span class="n">LEVELS</span><span class="p">[</span><span class="n">level</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
+                <span class="n">content</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">formatter</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">,</span>
+                    <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">_START_TIME</span><span class="p">,</span>
+                    <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">handler</span><span class="o">.</span><span class="n">level</span> <span class="o">&lt;=</span> <span class="n">LEVELS</span><span class="p">[</span><span class="n">level</span><span class="p">]:</span>
+                    <span class="n">handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">content</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">handlers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns a list of handlers that are accessible by the logger.</span>
+
+<span class="sd">        If propagate was set to True, data were sent to root&#39;s handlers.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A list of all handlers.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s2">&quot;root&quot;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">propagate</span> <span class="ow">and</span> <span class="s2">&quot;root&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">LOGGERS</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handlers</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">LOGGERS</span><span class="p">[</span><span class="s2">&quot;root&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">handlers</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handlers</span>
+
+<div class="viewcode-block" id="Logger.set_level"><a class="viewcode-back" href="../ulogging.html#ulogging.Logger.set_level">[docs]</a>    <span class="k">def</span> <span class="nf">set_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Sets the logger&#39;s level.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            level: Can be DEBUG, INFO, WARNING, ERROR or CRITICAL, or a int from 0 to 4</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">level</span> <span class="o">=</span> <span class="n">LEVELS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_level</span> <span class="o">=</span> <span class="n">level</span></div>
+
+<div class="viewcode-block" id="Logger.add_handler"><a class="viewcode-back" href="../ulogging.html#ulogging.Logger.add_handler">[docs]</a>    <span class="k">def</span> <span class="nf">add_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handler</span><span class="p">:</span> <span class="n">Handler</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Add an Handler instance to the logger.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            handler: A Handler class (FileHandler or StreamHandler)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handlers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;Logger(name=</span><span class="si">{}</span><span class="s2">, level=</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_level</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Adrien J..
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

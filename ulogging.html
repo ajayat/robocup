@@ -1,0 +1,400 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Logging module &mdash; Robocup 1.1.0rc documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Utils module" href="utils.html" />
+    <link rel="prev" title="Sensors module" href="sensors.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Robocup
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">OpenMV Camera</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="boot.html">Boot module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="motors.html">Motors module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="robot.html">Robot module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sensors.html">Sensors module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Logging module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Robocup</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="modules.html">OpenMV Camera</a> &raquo;</li>
+        
+      <li>Logging module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/ulogging.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-ulogging">
+<span id="logging-module"></span><h1>Logging module<a class="headerlink" href="#module-ulogging" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="ulogging.FileHandler">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ulogging.</span></span><span class="sig-name descname"><span class="pre">FileHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ulogging.html#FileHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ulogging.FileHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ulogging.Handler" title="ulogging.Handler"><code class="xref py py-class docutils literal notranslate"><span class="pre">ulogging.Handler</span></code></a></p>
+<p>A handler used to performs files operations.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ulogging.FileHandler.file">
+<span class="sig-name descname"><span class="pre">file</span></span><a class="headerlink" href="#ulogging.FileHandler.file" title="Permalink to this definition">¶</a></dt>
+<dd><p>the file path</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ulogging.FileHandler.formatter">
+<span class="sig-name descname"><span class="pre">formatter</span></span><a class="headerlink" href="#ulogging.FileHandler.formatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets a format for logs
+default format is “{level}: {name} (+{time}s) -&gt; {message}”</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ulogging.FileHandler.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ulogging.html#FileHandler.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ulogging.FileHandler.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ulogging.FileHandler.write">
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">content</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ulogging.html#FileHandler.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ulogging.FileHandler.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write data into the specified file, and close after.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>content</strong> – a log line to write in a file</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ulogging.Handler">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ulogging.</span></span><span class="sig-name descname"><span class="pre">Handler</span></span><a class="reference internal" href="_modules/ulogging.html#Handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ulogging.Handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class that gives general methods of a handler used for I/O operations.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ulogging.Handler.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ulogging.html#Handler.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ulogging.Handler.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="ulogging.Handler.level">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">level</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#ulogging.Handler.level" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ulogging.Handler.set_level">
+<span class="sig-name descname"><span class="pre">set_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/ulogging.html#Handler.set_level"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ulogging.Handler.set_level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the log level for filtering logs at the handler scope.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>level</strong> – Can be DEBUG, INFO, WARNING, ERROR or CRITICAL, or a int from 0 to 4</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ulogging.Logger">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ulogging.</span></span><span class="sig-name descname"><span class="pre">Logger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ulogging.html#Logger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ulogging.Logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class to perform filtering log messages before sending to handlers.</p>
+<p>Conventionnal usage:
+logger = logging.Logger(__name__)</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ulogging.Logger.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#ulogging.Logger.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The logger’s name</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ulogging.Logger.propagate">
+<span class="sig-name descname"><span class="pre">propagate</span></span><a class="headerlink" href="#ulogging.Logger.propagate" title="Permalink to this definition">¶</a></dt>
+<dd><p>If set to True (default), logs will be written in root’s handlers.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ulogging.Logger.LOGGERS">
+<span class="sig-name descname"><span class="pre">LOGGERS</span></span><em class="property"> <span class="pre">=</span> <span class="pre">{'motors':</span> <span class="pre">Logger(name=motors,</span> <span class="pre">level=1),</span> <span class="pre">'robot':</span> <span class="pre">Logger(name=robot,</span> <span class="pre">level=1),</span> <span class="pre">'root':</span> <span class="pre">Logger(name=root,</span> <span class="pre">level=1),</span> <span class="pre">'sensors':</span> <span class="pre">Logger(name=sensors,</span> <span class="pre">level=1)}</span></em><a class="headerlink" href="#ulogging.Logger.LOGGERS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ulogging.Logger.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ulogging.html#Logger.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ulogging.Logger.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the logger.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – the logger’s name</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ulogging.Logger.add_handler">
+<span class="sig-name descname"><span class="pre">add_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">handler</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#ulogging.Handler" title="ulogging.Handler"><span class="pre">ulogging.Handler</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/ulogging.html#Logger.add_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ulogging.Logger.add_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an Handler instance to the logger.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>handler</strong> – A Handler class (FileHandler or StreamHandler)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="ulogging.Logger.handlers">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">handlers</span></span><em class="property"><span class="pre">:</span> <span class="pre">list</span></em><a class="headerlink" href="#ulogging.Logger.handlers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of handlers that are accessible by the logger.</p>
+<p>If propagate was set to True, data were sent to root’s handlers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A list of all handlers.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ulogging.Logger.log">
+<span class="sig-name descname"><span class="pre">log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/ulogging.html#Logger.log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ulogging.Logger.log" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a log line in a file.</p>
+<p>Tests if the log’s request level is superior to the logger level,
+then format the string with the format of the handler and write it.
+Shortcuts methods are debug(), info(), error(), warning() and critical().</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>level</strong> – Can be DEBUG, INFO, WARNING, ERROR or CRITICAL, or a int from 0 to 4.</p></li>
+<li><p><strong>message</strong> – The message to write.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ulogging.Logger.set_level">
+<span class="sig-name descname"><span class="pre">set_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/ulogging.html#Logger.set_level"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ulogging.Logger.set_level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the logger’s level.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>level</strong> – Can be DEBUG, INFO, WARNING, ERROR or CRITICAL, or a int from 0 to 4</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ulogging.StreamHandler">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ulogging.</span></span><span class="sig-name descname"><span class="pre">StreamHandler</span></span><a class="reference internal" href="_modules/ulogging.html#StreamHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ulogging.StreamHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ulogging.Handler" title="ulogging.Handler"><code class="xref py py-class docutils literal notranslate"><span class="pre">ulogging.Handler</span></code></a></p>
+<p>A handler used to write logs in the output console</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ulogging.StreamHandler.formatter">
+<span class="sig-name descname"><span class="pre">formatter</span></span><a class="headerlink" href="#ulogging.StreamHandler.formatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets a format for logs
+default format is “{level}: {name} -&gt; {message}”</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ulogging.StreamHandler.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ulogging.html#StreamHandler.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ulogging.StreamHandler.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ulogging.StreamHandler.write">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">content</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ulogging.html#StreamHandler.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ulogging.StreamHandler.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes a formatted line to the output console (sys.stdout)</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="utils.html" class="btn btn-neutral float-right" title="Utils module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="sensors.html" class="btn btn-neutral float-left" title="Sensors module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Adrien J..
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
