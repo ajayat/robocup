@@ -24,7 +24,7 @@ class Sensor:
         return "Sensor(pin={}, address={})".format(self.PIN, self.SLAVE_ADDRESS)
 
     def recv(self) -> tuple:
-        """Requests the Arduino controller via I2C and unpack data received 
+        """Requests the Arduino controller via I2C and unpack data received
         from sensors.
 
         Returns:
@@ -52,9 +52,7 @@ class Camera:
     """
 
     # List of thresholds (can be obtained in Open MV) that match the element color
-    THRESHOLDS = [
-        (0, 100, 127, 42, -128, 127)  # RED COLOR
-    ]
+    THRESHOLDS = [(0, 100, 127, 42, -128, 127)]  # RED COLOR
     BALL_DIAMETER = 45  # in millimeters
     FOCAL_LENGTH = 2.8
     HFOV = 70.8  # horizontal field of view in degrees
@@ -62,8 +60,7 @@ class Camera:
     REAL_SIZE = 7  # in millimeters
 
     def __init__(self):
-        """Initialize the LED to show state and setup the camera sensor
-        """
+        """Initialize the LED to show state and setup the camera sensor"""
         self._red_led = pyb.LED(1)  # Turns led on (red color)
         self._red_led.on()
         # Setup sensor settings
@@ -87,9 +84,8 @@ class Camera:
         Returns:
             The distance in millimeters.
         """
-        obj_width_on_sensor = (Camera.REAL_SIZE * blob.h()/2) / sensor.width()
-        distance = (Camera.BALL_DIAMETER * Camera.FOCAL_LENGTH) / \
-            obj_width_on_sensor
+        obj_width_on_sensor = (Camera.REAL_SIZE * blob.h() / 2) / sensor.width()
+        distance = (Camera.BALL_DIAMETER * Camera.FOCAL_LENGTH) / obj_width_on_sensor
         return distance
 
     @staticmethod
@@ -102,12 +98,11 @@ class Camera:
         Returns:
             The angle between [-35.4, +35.4]
         """
-        rel_angle = Camera.HFOV * \
-            (blob.cxf() - sensor.width()/2) / sensor.width()
+        rel_angle = Camera.HFOV * (blob.cxf() - sensor.width() / 2) / sensor.width()
         return rel_angle
 
     def shutdown(self):
-        """ Shutdown the camera and the LED """
+        """Shutdown the camera and the LED"""
         sensor.shutdown()
         self._red_led.off()
 
@@ -122,7 +117,9 @@ class Camera:
         """
         img = sensor.snapshot()
         # Only blobs with more 50 pixels and area are returned
-        for blob in img.find_blobs(Camera.THRESHOLDS, pixels_threshold=50, area_threshold=50):
+        for blob in img.find_blobs(
+            Camera.THRESHOLDS, pixels_threshold=50, area_threshold=50
+        ):
             if blob.roundness() < 0.3:
                 continue
             if pyb.USB_VCP().debug_mode_enabled():

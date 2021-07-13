@@ -117,7 +117,7 @@ class Motor:
             await self.run(speed, time)
 
     async def stop(self):
-        """ Reset motor position to 0 and reinitialize data received. """
+        """Reset motor position to 0 and reinitialize data received."""
         data = [self.__slot, Motor.CMD_RESET]
         await self.__send_data(data)
         self.__speed = 0
@@ -138,7 +138,7 @@ class Motor:
     def _to_bytes(fmt: str, data) -> list:
         """Convert and pack data with a given format
 
-        The list of available formats can be found here: 
+        The list of available formats can be found here:
         https://docs.python.org/3/library/struct.html
 
         Args:

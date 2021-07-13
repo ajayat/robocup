@@ -22,12 +22,12 @@ sys.path.insert(0, OPENMV_CAM_ROOT.as_posix())
 
 # -- Project information -----------------------------------------------------
 
-project = 'Robocup'
-copyright = '2021, Adrien J.'
-author = 'Adrien J.'
+project = "Robocup"
+copyright = "2021, Adrien Jayat"
+author = "Adrien Jayat"
 
 # The full version, including alpha/beta/rc tags
-release = '1.1.0rc'
+release = "1.1.0rc"
 
 
 # -- General configuration ---------------------------------------------------
@@ -36,25 +36,31 @@ release = '1.1.0rc'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'myst_parser',
     "sphinx.ext.autodoc",
-    'sphinx.ext.napoleon',
+    "sphinx.ext.napoleon",
     "sphinx.ext.doctest",
     "sphinx.ext.extlinks",
     "sphinx.ext.viewcode",
-    "sphinx_rtd_theme"
+    "sphinx_rtd_theme",
+    "sphinx.ext.githubpages",
+    "m2r2",
 ]
 
 # Emulate importations
 autodoc_mock_imports = ["utime", "pyb", "ustruct", "uasyncio", "sensor"]
+autodoc_default_options = {
+    "private-members": True,
+    "special-members": "__init__",
+    "undoc-members": True,
+}
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -62,13 +68,13 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
+html_theme = "sphinx_rtd_theme"
 
 html_theme_options = {
-    'style_external_links': True,
+    "style_external_links": True,
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ["_static"]

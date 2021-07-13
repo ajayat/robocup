@@ -6,11 +6,21 @@
 SPHINXOPTS    ?=
 SPHINXBUILD   ?= sphinx-build
 SOURCEDIR     = .
-BUILDDIR      = ../../robocup-docs
+BUILDDIR      = _build/
+DOCSDIR       = ../../robocup-docs/
 
 # Put it first so that "make" without argument is like "make help".
 help:
 	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+
+apidoc:
+	@sphinx-apidoc -o "$(SOURCEDIR)" ../openmv_cam -f --private -A "Adrien Jayat"
+
+docs:
+	@make html
+	@move /y "$(BUILDDIR)\html\*" "$(DOCSDIR)"
+	@make clean
+	@rd /s /q "$(BUILDDIR)\html"
 
 .PHONY: help Makefile
 

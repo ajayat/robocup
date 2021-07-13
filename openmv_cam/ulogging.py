@@ -9,8 +9,7 @@ LEVELS = {"DEBUG": 0, "INFO": 1, "WARNING": 2, "ERROR": 3, "CRITICAL": 4}
 
 
 class Handler:
-    """A class that gives general methods of a handler used for I/O operations.
-    """
+    """A class that gives general methods of a handler used for I/O operations."""
 
     def __init__(self):
         self._level = 1  # default to INFO
@@ -54,7 +53,7 @@ class FileHandler(Handler):
             content: a log line to write in a file
         """
         with open(self.file, "a", encoding="utf-8") as logfile:
-            logfile.write(content+"\n")
+            logfile.write(content + "\n")
             logfile.flush()
 
 
@@ -73,8 +72,8 @@ class StreamHandler(Handler):
 
     @staticmethod
     def write(content: str):
-        """ Writes a formatted line to the output console (sys.stdout) """
-        sys.stdout.write(content+"\n")
+        """Writes a formatted line to the output console (sys.stdout)"""
+        sys.stdout.write(content + "\n")
 
 
 class Logger:
@@ -87,11 +86,12 @@ class Logger:
         name: The logger's name
         propagate: If set to True (default), logs will be written in root's handlers.
     """
+
     # A dict containing all instances of logger, we can get a logger with its name
     LOGGERS = {}
 
     def __new__(cls, name: str):
-        """The real constructor, 
+        """The real constructor,
 
         It's used to check if an instance with the same name already exists
 
@@ -137,8 +137,8 @@ class Logger:
                 content = handler.formatter.format(
                     level=level,
                     name=self.name,
-                    time=time.time()-_START_TIME,
-                    message=message
+                    time=time.time() - _START_TIME,
+                    message=message,
                 )
                 if handler.level <= LEVELS[level]:
                     handler.write(content)
@@ -152,8 +152,8 @@ class Logger:
         Returns:
             A list of all handlers.
         """
-        if self.name != 'root' and self.propagate and 'root' in self.LOGGERS:
-            return self._handlers + self.LOGGERS['root'].handlers
+        if self.name != "root" and self.propagate and "root" in self.LOGGERS:
+            return self._handlers + self.LOGGERS["root"].handlers
         return self._handlers
 
     def set_level(self, level) -> None:

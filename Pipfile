@@ -6,13 +6,15 @@ name = "pypi"
 [packages]
 
 [dev-packages]
-sphinx = ">=4.1.0,<5.0"
-autopep8 = "*"
-docutils = "*"
+sphinx = "*"
+m2r2 = "*"
+black = "*"
+snooty-lextudio = "*"
 rstcheck = "*"
-myst-parser = "*"
 sphinx-rtd-theme = "*"
-sphinx-sizzle-theme = "*"
 
 [requires]
 python_version = "3.9"
+
+[pipenv]
+allow_prereleases = true

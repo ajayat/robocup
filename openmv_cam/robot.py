@@ -45,8 +45,7 @@ class Robot:
         return time
 
     async def stop(self, *_) -> None:
-        """Stop all motors and timer
-        """
+        """Stop all motors and timer"""
         logger.debug("Stopping motors...")
         await self.rmotor.stop()
         await self.lmotor.stop()
@@ -82,8 +81,7 @@ class Robot:
 
 
 async def main() -> None:
-    """The main function, interact with sensors and Robot class
-    """
+    """The main function, interact with sensors and Robot class"""
     robot = Robot()
     logger.info("Robot is ready")
 
