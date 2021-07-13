@@ -2,7 +2,7 @@
 import uasyncio as asyncio
 import math
 
-import logging
+import ulogging as logging
 from motors import Motor
 from sensors import Camera, Sensor
 
@@ -10,17 +10,12 @@ logger = logging.Logger(__name__)
 
 
 class Robot:
-    """
-    A class that represents the robot and offers shortcuts functions
+    """A class that represents the robot and offers shortcuts functions
     to runs two motors.
 
-    Attributes:
-        rmotor: The right-side motor
-        lmotor: The left-side motor
-    Methods:
-        rotate(angle: float, speed: float)
-        move_to(blob, speed: float)
-        stop(self)
+    Args:
+        rmotor (Motor): The right-side motor
+        lmotor (Motor): The left-side motor
     """
 
     WHEEL_DIAMETER = 80  # in millimeters
@@ -38,30 +33,32 @@ class Robot:
 
     @staticmethod
     def time_for_distance(distance: float, speed: float) -> float:
-        """
-        Returns needed time in seconds to travel a specified distance
+        """Returns needed time in seconds to travel a specified distance
         at a given speed.
-        Parameters:
-            distance (float): in millimeters
-            speed (float): in RPM
+
+        Args:
+            distance: in millimeters
+            speed: in RPM
         """
         turns = distance / (Robot.WHEEL_DIAMETER * math.pi)
         time = turns * 60 / abs(speed)
         return time
 
-    async def stop(self, *_):
-        """ Stop all motors and timer """
+    async def stop(self, *_) -> None:
+        """Stop all motors and timer
+        """
         logger.debug("Stopping motors...")
         await self.rmotor.stop()
         await self.lmotor.stop()
 
-    async def rotate(self, speed: float, angle: float):
-        """
-        Turns itself in clockwise.
-        Parameters:
+    async def rotate(self, speed: float, angle: float) -> None:
+        """Turns itself in clockwise.
+
+        The recommended speed is 100.
+
+        Args:
            speed: the speed [-200; 200] in RPM
            angle: the angle [-180, 180] in degrees to turn
-        The recommended speed is 100.
         """
         if angle < 0:
             angle, speed = -angle, -speed
@@ -72,11 +69,11 @@ class Robot:
         await self.lmotor.run(speed, time)
         # await asyncio.sleep_ms(round(time * 1000))
 
-    async def move_to(self, distance: float, speed: float):
-        """
-        Move to the object position at a given speed.
-        Parameters:
-           distance (float): distance to run
+    async def move_to(self, distance: float, speed: float) -> None:
+        """Move to the object position at a given speed.
+
+        Args:
+           distance: distance to run
            speed: the speed [-200; 200] in RPM
         """
         time = self.time_for_distance(distance, speed)
@@ -84,8 +81,9 @@ class Robot:
         await self.lmotor.run(speed, time)
 
 
-async def main():
-    """ The main function, interact with sensors and Robot class"""
+async def main() -> None:
+    """The main function, interact with sensors and Robot class
+    """
     robot = Robot()
     logger.info("Robot is ready")
 

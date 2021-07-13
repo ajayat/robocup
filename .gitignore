@@ -1,7 +1,17 @@
-# virtual environments
-.venv/
-venv/
-
-# IDEs
-.idea/
+### IDE Folders ###
 .vscode/
+.idea/
+
+### Virtual environment ###
+.venv/
+
+### Cache ###
+**/__pycache__/
+
+### Sphinx ###
+**/_build/
+**/_static/
+**/_templates/
+
+### logs ###
+**/logs/

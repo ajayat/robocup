@@ -1,9 +1,13 @@
-# This program is the entry point of the Open MV Cam
+"""
+This program is the entry point of the Open MV Cam.
+This is the one you need to launch in OpenMV IDE.
+"""
+
 import pyb
 import uasyncio as asyncio
 
-import logging
 import robot
+import ulogging as logging
 
 # Creates the root logger (all loggers are herited from it by default)
 logger = logging.Logger("root")

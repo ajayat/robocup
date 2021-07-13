@@ -2,26 +2,18 @@ from pyb import I2C
 import uasyncio as asyncio
 import ustruct as struct
 
-import logging
 from utils import Timer
+import ulogging as logging
 
 logger = logging.Logger(__name__)
 
 
 class Motor:
-    """
-    A class to represent a motor and offers an API to control it.
-
-    Methods:
-        scan(): Scan slaves.
-        run(speed, time=None): Runs the motor.
-        move(angle, speed): Move the motor for a specified angle
-        get_speed(): Returns the current motor speed
-        stop(): Stop the motor.
+    """A class to represent a motor and offers an API to control it.
 
     Additionnal documentation can be found here:
-        http://learn.makeblock.com/en/me-encoder-motor-driver/
-        https://github.com/Makeblock-official/Makeblock-Libraries/blob/master/src/MeEncoderMotor.cpp
+        - http://learn.makeblock.com/en/me-encoder-motor-driver/
+        - https://github.com/Makeblock-official/Makeblock-Libraries/blob/master/src/MeEncoderMotor.cpp
     """
 
     HEADER = [0xA5, 0x01]
@@ -32,12 +24,12 @@ class Motor:
     CMD_MOVE_AGL = 0x11
 
     def __init__(self, pin: int, addr: int, slot: int):
-        """
-        Initialize I2C communication to motor.
-        Parameters:
-            pin (int): I2C bus' pin (2 or 4)
-            addr (int): slave's address
-            slot (int): motor's slot (1 or 2)
+        """Initialize I2C communication to motor.
+
+        Args:
+            pin: I2C bus' pin (2 or 4)
+            addr: slave's address
+            slot: motor's slot (1 or 2)
         """
         self.__slot = slot - 1
         self.__addr = addr
@@ -51,10 +43,10 @@ class Motor:
         return self.__speed
 
     async def __send_data(self, data: list):
-        """
-        Creates a trame from the data and send it to motor via I2C.
-        Parameters:
-            data (list): [slot, CMD, args]: data to send
+        """Creates a trame from the data and send it to motor via I2C.
+
+        Args:
+            data: [slot, CMD, args]: data to send
         """
         lrc = self._lrc_calc(data)
         data_size = self._to_bytes("l", len(data))
@@ -62,38 +54,41 @@ class Motor:
         self.__i2c.send(bytearray(trame), self.__addr)
         await asyncio.sleep_ms(20)  # A few wait time is needed for the motor.
 
-    def __recv_data(self, length: int):
-        """
-        Receives data from I2C slave's address
-        Parameters:
-            length (int): number of bytes to receive
+    def __recv_data(self, length: int) -> bytearray:
+        """Receives data from I2C slave's address
+
+        Args:
+            length number of bytes to receive
+
         Returns:
-            buffer (bytearray): data received in bytes
+            buffer: data received in bytes
         """
         buffer = bytearray(length)
         self.__i2c.recv(buffer, self.__addr)
         return buffer
 
-    def scan(self):
-        """
-        Scan slaves connected to the current I2C pin.
+    def scan(self) -> list:
+        """Scan slaves connected to the current I2C pin.
+
         Returns:
-            list_of_slaves (list): addresses of slaves that respond
+            list_of_slaves: addresses of slaves that respond
         """
         list_of_slaves = self.__i2c.scan()
         return list_of_slaves
 
-    async def run(self, speed: float, time=None):
-        """
-        Controls motor rotation with speed given for an optional time.
-        Parameters:
-            speed (float): rotation speed (RPM) in [-200, +200]
-            time (float, default None): in seconds, runs for a specified time
+    async def run(self, speed: float, time=None) -> None:
+        """Controls motor rotation with speed given for an optional time.
+
+        Args:
+            speed: rotation speed (RPM) in [-200, +200]
+            time: in seconds, runs for a specified time
         """
         if self.__i2c.is_ready(self.__addr):
             # Sets time limits to [-200 , +200] and convert it in bytes
-            if speed < -200: speed = -200
-            elif speed > 200: speed = 200
+            if speed < -200:
+                speed = -200
+            elif speed > 200:
+                speed = 200
             if speed != self.__speed:
                 speed_bytes = self._to_bytes("f", speed)
                 data = [self.__slot, Motor.CMD_MOVE_SPD] + speed_bytes
@@ -105,15 +100,17 @@ class Motor:
         else:
             raise RuntimeError("Motor {} cannot be run.".format(self.__slot))
 
-    async def move(self, angle: float, speed: float):
+    async def move(self, angle: float, speed: float) -> None:
+        """Move motor of angle degrees at a speed given.
+
+        Args:
+            speed: rotation speed (RPM) in [-200, +200]
+            angle: angle in degrees to rotate.
         """
-        Move motor of angle degrees at a speed given.
-        Parameters:
-            speed (float): rotation speed (RPM) in [-200, +200]
-            angle (float): angle in degrees to rotate.
-        """
-        if speed < -200: speed = -200
-        elif speed > 200: speed = 200
+        if speed < -200:
+            speed = -200
+        elif speed > 200:
+            speed = 200
         if speed != self.__speed:
             self.__speed = speed
             time = (angle / 360 * 60) / speed
@@ -126,11 +123,11 @@ class Motor:
         self.__speed = 0
 
     @staticmethod
-    def _lrc_calc(data):
-        """
-        Calculate the Longitudinal Redondancy Check (LRC)
+    def _lrc_calc(data) -> int:
+        """Calculate the Longitudinal Redondancy Check (LRC)
+
         Returns:
-            lrc (int): the value of LRC
+            lrc: the value of LRC
         """
         lrc = 0x00
         for byte in data:
@@ -139,14 +136,17 @@ class Motor:
 
     @staticmethod
     def _to_bytes(fmt: str, data) -> list:
-        """
-        Convert and pack data with a given format, the list of available formats
-        can be found here: https://docs.python.org/3/library/struct.html
-        Parameters:
-            fmt (str): string used to pack the data from a given format.
-            data (any): data to be converted to bytes.
+        """Convert and pack data with a given format
+
+        The list of available formats can be found here: 
+        https://docs.python.org/3/library/struct.html
+
+        Args:
+            fmt: string used to pack the data from a given format.
+            data: data to be converted to bytes.
+
         Returns:
-            data_bytes (list): a list of each element of data converted to bytes.
+            data_bytes: a list of each element of data converted to bytes.
         """
         data_bytes = list(struct.pack(fmt, data))
         return data_bytes

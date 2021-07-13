@@ -2,18 +2,15 @@ import ustruct as struct
 import sensor
 import pyb
 
-import logging
+import ulogging as logging
 
 logger = logging.Logger(__name__)
 
 
 class Sensor:
-    """
-    A class that represent the Arduino-controlled sensors:
-    ultrasonics sensors and line sensors (IR).
+    """A class that represent the Arduino-controlled sensors
 
-    Methods:
-        recv(): returns in real-time data from the sensors
+    Offers an interface for ultrasonics sensors and line sensors (IR).
     """
 
     PIN = 2
@@ -27,11 +24,12 @@ class Sensor:
         return "Sensor(pin={}, address={})".format(self.PIN, self.SLAVE_ADDRESS)
 
     def recv(self) -> tuple:
-        """
-        Requests the Arduino controller via I2C and unpack data received from sensors.
+        """Requests the Arduino controller via I2C and unpack data received 
+        from sensors.
+
         Returns:
-            (front_dist: int, back_dist: int, line_sensors: list[int, int, int, int]):
-                The front and back distance and a list of four line sensors values.
+            (front_dist, back_dist, line_sensors):
+            The front and back distance and a list of four line sensors values.
         """
         # creates a buffer of 12 bytes (6 * typeof(int))
         buffer = bytearray(12)
@@ -43,18 +41,14 @@ class Sensor:
 
 
 class Camera:
-    """
-    A class to groups functions related to OpenMV Cam
+    """A class to groups functions related to OpenMV Cam
+
+    More infos:
+    https://openmv.io/products/openmv-cam-h7
 
     Attributes:
         width: the screen width in pixels
         height: the screen height in pixels
-    Static Methods:
-        ball_blob(): returns a blob object if the ball was found or None
-        distance_to(blob): retruns the real distance to an object
-
-    More infos:
-    https://openmv.io/products/openmv-cam-h7
     """
 
     # List of thresholds (can be obtained in Open MV) that match the element color
@@ -68,7 +62,8 @@ class Camera:
     REAL_SIZE = 7  # in millimeters
 
     def __init__(self):
-        """ Initialize the LED to show state and setup the camera sensor """
+        """Initialize the LED to show state and setup the camera sensor
+        """
         self._red_led = pyb.LED(1)  # Turns led on (red color)
         self._red_led.on()
         # Setup sensor settings
@@ -79,27 +74,36 @@ class Camera:
         sensor.set_pixformat(sensor.RGB565)
         sensor.set_framesize(sensor.QVGA)
         sensor.set_auto_gain(False)  # Must be turned off for color tracking
-        sensor.set_auto_whitebal(False)  # Must be turned off for color tracking
+        # Must be turned off for color tracking
+        sensor.set_auto_whitebal(False)
 
     @staticmethod
-    def distance_to(blob):
-        """
-        Calculate real distance (in millimeters) between camera and object
-        Parameters:
+    def distance_to(blob) -> float:
+        """Calculate real distance between camera and object.
+
+        Args:
             blob: a blob object (you can get one with ball_blob())
+
+        Returns:
+            The distance in millimeters.
         """
         obj_width_on_sensor = (Camera.REAL_SIZE * blob.h()/2) / sensor.width()
-        distance = (Camera.BALL_DIAMETER * Camera.FOCAL_LENGTH) / obj_width_on_sensor
+        distance = (Camera.BALL_DIAMETER * Camera.FOCAL_LENGTH) / \
+            obj_width_on_sensor
         return distance
 
     @staticmethod
-    def get_angle(blob):
-        """
-        Get horizontal relative angle (in degrees) between [-35.4, +35.4] of the blob
-        Parameters:
+    def get_angle(blob) -> float:
+        """Get horizontal relative angle (in degrees) of the blob.
+
+        Args:
             blob: a blob object (you can get one with ball_blob())
+
+        Returns:
+            The angle between [-35.4, +35.4]
         """
-        rel_angle = Camera.HFOV * (blob.cxf() - sensor.width()/2) / sensor.width()
+        rel_angle = Camera.HFOV * \
+            (blob.cxf() - sensor.width()/2) / sensor.width()
         return rel_angle
 
     def shutdown(self):
